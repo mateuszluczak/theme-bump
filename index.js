@@ -6,7 +6,7 @@ const diff = require('lodash.difference');
 const excludedDirs = ['node_modules', 'content'];
 const themesPath = 'etc/designs/zg';
 const themeInfoName = 'theme.json';
-const themeContents = ['desktop', themeInfoName]
+const themeContents = ['desktop', themeInfoName];
 
 const isDirectory = (source) => {
     return lstatSync(source).isDirectory();
@@ -15,7 +15,7 @@ const isDirectory = (source) => {
 const isTheme = (source) => {
     const contents = readdirSync(source);
     return diff(contents, themeContents).length === 0;
-}
+};
 
 const getThemes = (source) => {
     let themes = [];
@@ -46,7 +46,7 @@ const getThemes = (source) => {
     }
 
     return themes;
-}
+};
 
 const getThemeInfo = (source) => {
     const path = resolve(source, themeInfoName);
