@@ -10,7 +10,7 @@ Easily bump theme version in Creative Exchange packages
 
     $ theme-bump patch 
 
-        Version bumped to 0.4.1 in package.json and component.json.
+        Version bumped by patch in theme.json of theme in package
 
 ## API
 
