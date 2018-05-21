@@ -50,8 +50,7 @@ const bump = (root, version, force) => {
 
         info.version = info.version.replace(/-/g, '.');
 
-        const bumped = increment(info.version, version);
-
+        const bumped = (!~version.indexOf('.')) ? increment(info.version, version) : version;
         if (!bumped) throw new Error('Invalid version specified');
 
         info.version = bumped.replace(/\./g, '-');
