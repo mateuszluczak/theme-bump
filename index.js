@@ -72,9 +72,10 @@ const bump = (root, version, force) => {
         if (!info.version) throw new Error('No version in theme "' + getName(themePath) + '"');
         if (info.protectedTheme && !force) return;
 
-        info.version = info.version.replace(/-/g, '.');
+        res.title = info.title;                
         res.old = info.version;
-        res.title = info.title;        
+        
+        info.version = info.version.replace(/-/g, '.');
 
         const bumped = (!~version.indexOf('.')) ? increment(info.version, version) : version;
         if (!bumped) throw new Error('Invalid version specified');
