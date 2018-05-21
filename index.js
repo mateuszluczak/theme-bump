@@ -65,6 +65,7 @@ const bump = (root, version, force) => {
     const themes = {};  
 
     themePaths.forEach((themePath) => {
+        const res = {};
         const info = getThemeInfo(themePath);
         const path =  resolve(themePath, themeInfoName);
 
@@ -72,13 +73,16 @@ const bump = (root, version, force) => {
         if (info.protectedTheme && !force) return;
 
         info.version = info.version.replace(/-/g, '.');
+        res.old = info.version;
+        res.title = info.title;        
 
         const bumped = (!~version.indexOf('.')) ? increment(info.version, version) : version;
         if (!bumped) throw new Error('Invalid version specified');
 
         info.version = bumped.replace(/\./g, '-');
+        res.new = info.version;
 
-        themes[themePath] = info;
+        themes[themePath] = res;
 
         writeFileSync(path, JSON.stringify(info, null, 2));
     });
