@@ -1,14 +1,11 @@
 {
   "name": "theme-bump",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Bump the version of Zen Garden themes in Creative Exchange",
   "repository": "git://github.com/mateuszluczak/theme-bump.git",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "bin": {
-    "bump": "bin/theme-bump"
+    "bump": "bin/theme-bump.js"
   },
   "keywords": [],
   "author": "Mateusz Luczak <mateusz.luczak@outlook.com>",
