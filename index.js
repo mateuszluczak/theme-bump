@@ -3,17 +3,13 @@ const { writeFileSync, lstatSync, readdirSync, existsSync } = require('fs');
 const { join, resolve } = require('path');
 const diff = require('lodash.difference');
 
-const excludedDirs = ['node_modules'];
+const excludedDirs = ['node_modules', 'content'];
 const themesPath = 'etc/designs/zg';
 const themeInfoName = 'theme.json';
 const themeContents = ['desktop', themeInfoName]
 
 const isDirectory = (source) => {
     return lstatSync(source).isDirectory();
-};
-
-const getDirectories = (source) => {
-    return readdirSync(source).map(name => join(source, name)).filter(isDirectory);
 };
 
 const isTheme = (source) => {
