@@ -1,6 +1,6 @@
 {
   "name": "theme-bump",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Bump the version of Zen Garden themes in Creative Exchange",
   "repository": "git://github.com/mateuszluczak/theme-bump.git",
   "main": "index.js",
