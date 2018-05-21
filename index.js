@@ -3,30 +3,58 @@ const { writeFileSync, lstatSync, readdirSync, existsSync } = require('fs');
 const { join, resolve } = require('path');
 const diff = require('lodash.difference');
 
-const packageDirectories = ['content', 'etc'];
+const excludedDirs = ['node_modules'];
 const themesPath = 'etc/designs/zg';
 const themeInfoName = 'theme.json';
+const themeContents = ['desktop', themeInfoName]
 
 const isDirectory = (source) => {
     return lstatSync(source).isDirectory();
 };
 
-const isPackageRoot = (source) => {
-    return diff(packageDirectories, getDirectories(source).map(dir => getName(dir))).length === 0;
-}
-
 const getDirectories = (source) => {
     return readdirSync(source).map(name => join(source, name)).filter(isDirectory);
 };
 
+const isTheme = (source) => {
+    const contents = readdirSync(source);
+    return diff(contents, themeContents).length === 0;
+}
+
 const getThemes = (source) => {
-    const path = join(source, themesPath);
-    if (!existsSync(path)) return [];
-    return getDirectories(join(source, themesPath));
-};
+    let themes = [];
+
+    if (!existsSync(source)) {
+        throw new Error('Not existing directory'); 
+        return;
+    }
+
+    if (isDirectory(source) && isTheme(source)) {
+        themes.push(source);
+    } else {
+        readdirSync(source).forEach((file) => {
+            const filename = join(source, file);
+    
+            if (file.startsWith('.') || excludedDirs.indexOf(file) > -1) {
+                return false;
+            }
+    
+            if (isDirectory(filename)) {
+                if (isTheme(filename)) {
+                    themes.push(filename);
+                } else {
+                    themes = themes.concat(getThemes(filename)); 
+                }
+            }
+        });
+    }
+
+    return themes;
+}
 
 const getThemeInfo = (source) => {
     const path = resolve(source, themeInfoName);
+    if (!existsSync(path)) return {};
     return require(path);
 };
 
@@ -36,7 +64,6 @@ const getName = (path) => {
 
 const bump = (root, version, force) => {
     if (!existsSync(root)) throw new Error('Not existing directory'); 
-    if (!isPackageRoot(root)) throw new Error('Directory is not a root of Creative Exchange package');
 
     const themePaths = getThemes(root);
     const themes = {};  
