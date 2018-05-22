@@ -59,8 +59,6 @@ const getName = (path) => {
 };
 
 const bump = (root, version, force) => {
-    if (!existsSync(root)) throw new Error('Not existing directory'); 
-
     const themePaths = getThemes(root);
     const themes = {};  
 
