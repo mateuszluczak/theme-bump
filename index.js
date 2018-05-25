@@ -1,12 +1,13 @@
 const increment = require('semver').inc;
 const { writeFileSync, lstatSync, readdirSync, existsSync } = require('fs');
 const { join, resolve } = require('path');
-const diff = require('lodash.difference');
 
 const excludedDirs = ['node_modules', 'content'];
-const themesPath = 'etc/designs/zg';
 const themeInfoName = 'theme.json';
-const themeContents = ['desktop', themeInfoName];
+
+const isExcludedDirectory = (source) => {
+   return source.startsWith('.') || excludedDirs.indexOf(source) > -1;
+};
 
 const isDirectory = (source) => {
     return lstatSync(source).isDirectory();
@@ -14,7 +15,17 @@ const isDirectory = (source) => {
 
 const isTheme = (source) => {
     const contents = readdirSync(source);
-    return diff(contents, themeContents).length === 0;
+	return contents.includes(themeInfoName);
+};
+
+const getThemeInfo = (source) => {
+    const path = resolve(source, themeInfoName);
+    if (!existsSync(path)) return {};
+    return require(path);
+};
+
+const getName = (path) => {
+    return /[^/]*$/.exec(path)[0];
 };
 
 const getThemes = (source) => {
@@ -22,7 +33,7 @@ const getThemes = (source) => {
 
     if (!existsSync(source)) {
         throw new Error('Not existing directory'); 
-        return;
+        return false;
     }
 
     if (isDirectory(source) && isTheme(source)) {
@@ -31,7 +42,7 @@ const getThemes = (source) => {
         readdirSync(source).forEach((file) => {
             const filename = join(source, file);
     
-            if (file.startsWith('.') || excludedDirs.indexOf(file) > -1) {
+            if (isExcludedDirectory(source)) {
                 return false;
             }
     
@@ -48,16 +59,6 @@ const getThemes = (source) => {
     return themes;
 };
 
-const getThemeInfo = (source) => {
-    const path = resolve(source, themeInfoName);
-    if (!existsSync(path)) return {};
-    return require(path);
-};
-
-const getName = (path) => {
-    return /[^/]*$/.exec(path)[0];
-};
-
 const bump = (root, version, force) => {
     const themePaths = getThemes(root);
     const themes = {};  
@@ -67,7 +68,7 @@ const bump = (root, version, force) => {
         const info = getThemeInfo(themePath);
         const path =  resolve(themePath, themeInfoName);
 
-        if (!info.version) throw new Error('No version in theme "' + getName(themePath) + '"');
+        if (!info.version) throw new Error(`Invalid theme.json in ${getName(themePath)}`);
         if (info.protectedTheme && !force) return;
 
         res.title = info.title;                

@@ -4,7 +4,7 @@ Easily bump theme version in Creative Exchange packages
 
 ## Installation
 
-    $ npm install -g theme-bump
+    $ npm i theme-bump -g
 
 ## Usage
 
